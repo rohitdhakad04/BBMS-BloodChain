@@ -1,0 +1,17 @@
+{
+  "name": "blockchain",
+  "scripts": {
+    "node1": "npx hardhat node --port 8545",
+    "node2": "npx hardhat node --port 8546",
+    "node3": "npx hardhat node --port 8547",
+    "start-all": "node scripts/startNodes.js",
+    "deploy:node1": "npx hardhat run scripts/deploy.js --network node1",
+    "deploy:node2": "npx hardhat run scripts/deploy.js --network node2",
+    "deploy:node3": "npx hardhat run scripts/deploy.js --network node3",
+    "test": "npx hardhat test"
+  },
+  "devDependencies": {
+    "hardhat": "^2.19.0",
+    "@nomicfoundation/hardhat-toolbox": "^4.0.0"
+  }
+}
