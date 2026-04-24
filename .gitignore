@@ -1,17 +1,25 @@
-# Dependencies
 node_modules/
+.env
+artifacts/
+cache/
+coverage/
+typechain-types/
+dist/
+build/
+*.local
+
+# Nested node_modules
 **/node_modules/
 
-# Environment variables
-.env
+# Nested .env files
 **/.env
 
-# Hardhat
+# Hardhat specific
 blockchain/cache/
 blockchain/artifacts/
 blockchain/ignition/deployments/
 
-# Build output
+# Frontend build
 frontend/dist/
 
 # Logs

@@ -1,12 +1,12 @@
 # BloodChain Hospital
 ## Blockchain-Based Blood Donation System
-### Simple Majority Voting Consensus (2/3 Byzantine Fault Tolerance)
+### Proof of Stake Consensus (Stake-Weighted Validator Agreement)
 
 ## Tech Stack
 - Frontend: React.js + Vite + Tailwind CSS
 - Backend: Node.js + Express.js + MongoDB
 - Blockchain: Ethereum + Solidity + Hardhat
-- Consensus: Simple Majority Vote (2 of 3 nodes)
+- Consensus: Proof of Stake (51/100 stake threshold)
 - Library: ethers.js v6
 
 ## Prerequisites
@@ -61,6 +61,9 @@ http://localhost:5173
 6. Node Status tab — monitor all 3 nodes + consensus live
 
 ## Consensus Algorithm
-Simple Majority Vote: 2 out of 3 nodes must accept a transaction.
-If Node 3 is offline, Nodes 1 and 2 still reach majority (2/3).
-If 2 nodes are offline, consensus fails and transaction is rejected.
+Proof of Stake: Each validator has a stake weight (Node 1: 40, Node 2: 35, Node 3: 25 — total: 100).
+The highest-stake online validator is selected as the block proposer.
+A transaction is finalized when agreeing validators hold ≥ 51/100 stake.
+If Node 3 is offline, Nodes 1 and 2 hold 75 stake — consensus still reached.
+If Node 1 is offline, Nodes 2 and 3 hold 60 stake — consensus still reached.
+If 2 of the top validators are offline, remaining stake falls below 51 — consensus fails.

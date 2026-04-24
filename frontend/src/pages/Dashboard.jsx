@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { useAuth } from '../context/AuthContext'
 import Navbar from '../components/Navbar'
@@ -12,29 +12,30 @@ export default function Dashboard() {
   const [activeTab, setActiveTab] = useState(0)
   const [stats, setStats] = useState({ totalDonations: 0, activeNodes: 0, consensusStatus: '' })
 
+  const fetchStats = async () => {
+    try {
+      const [donationsRes, nodesRes] = await Promise.allSettled([
+        axios.get('/api/donations', { headers: { Authorization: `Bearer ${token}` } }),
+        axios.get('/api/blockchain/nodes', { headers: { Authorization: `Bearer ${token}` } })
+      ])
+      const totalDonations = donationsRes.status === 'fulfilled' ? donationsRes.value.data.count : 0
+      let activeNodes = 0
+      let consensusStatus = ''
+      if (nodesRes.status === 'fulfilled') {
+        const nodeData = nodesRes.value.data
+        activeNodes = nodeData.nodes.filter(n => n.status === 'online').length
+        consensusStatus = nodeData.consensus.reached ? 'Consensus ✅' : 'No Consensus ⚠️'
+      }
+      setStats({ totalDonations, activeNodes, consensusStatus })
+    } catch (e) {}
+  }
+
   useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        const [donationsRes, nodesRes] = await Promise.allSettled([
-          axios.get('/api/donations', { headers: { Authorization: `Bearer ${token}` } }),
-          axios.get('/api/blockchain/nodes', { headers: { Authorization: `Bearer ${token}` } })
-        ])
-        const totalDonations = donationsRes.status === 'fulfilled' ? donationsRes.value.data.count : 0
-        let activeNodes = 0
-        let consensusStatus = ''
-        if (nodesRes.status === 'fulfilled') {
-          const nodeData = nodesRes.value.data
-          activeNodes = nodeData.nodes.filter(n => n.status === 'online').length
-          consensusStatus = nodeData.consensus.reached ? 'Consensus ✅' : 'No Consensus ⚠️'
-        }
-        setStats({ totalDonations, activeNodes, consensusStatus })
-      } catch (e) {}
-    }
     fetchStats()
   }, [token])
 
   const tabs = [
-    { label: '💉 Donate Blood', component: <DonateForm /> },
+    { label: '💉 Donate Blood', component: <DonateForm onSuccess={fetchStats} /> },
     { label: '🔍 Check Availability', component: <BloodSearch /> },
     { label: '📋 Donor List', component: <DonorList /> },
     { label: '🌐 Node Status', component: <NodeStatus /> }

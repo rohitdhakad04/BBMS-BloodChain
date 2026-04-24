@@ -1,10 +1,10 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import axios from 'axios'
 import { useAuth } from '../context/AuthContext'
 
 const BLOOD_GROUPS = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']
 
-export default function DonateForm() {
+export default function DonateForm({ onSuccess }) {
   const { user, token } = useAuth()
   const [form, setForm] = useState({
     donorName: user?.name || '',
@@ -36,6 +36,7 @@ export default function DonateForm() {
         headers: { Authorization: `Bearer ${token}` }
       })
       setResult(response.data)
+      if (onSuccess) onSuccess()
     } catch (err) {
       setError(err.response?.data?.error || 'Submission failed')
     }
